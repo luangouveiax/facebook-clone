@@ -9,4 +9,9 @@ class Post extends Model
     public ?string $type;
     public ?string $created_at;
     public ?string $body;
+    public ?object $user;
+    public ?bool $mine;
+    public ?int $likeCount;
+    public ?bool $liked;
+    public ?array $comments;
 }

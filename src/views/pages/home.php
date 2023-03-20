@@ -8,7 +8,18 @@
                 <div class="column pr-5">
                     <?=$render('feed-editor', ['user' => $loggedUser]);?>
 
-                    <?=$render('feed-item');?>
+                    <?php foreach ($feed['posts'] as $feedItem): ?>
+                        <?=$render('feed-item', [
+                            'data' => $feedItem,
+                            'loggedUser' => $loggedUser
+                        ]);?>
+                    <?php endforeach; ?>
+                    
+                    <div class="feed-pagination">
+                        <?php for($q=0;$q<$feed['totalPages'];$q++): ?>
+                            <a class="<?=($q==$feed['currentPage']? 'active':''); ?>" href="<?=$base;?>/?page=<?=$q;?>"><?=$q+1;?></a>
+                        <?php endfor; ?>
+                    </div>
 
                 </div>
                 <div class="column side pl-5">
