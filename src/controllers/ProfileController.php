@@ -23,13 +23,10 @@ class ProfileController extends Controller
         $page = intval(filter_input(INPUT_GET, 'page'));
 
         $id = $this->loggedUser->id;
-
         if(!empty($atts['id'])){
             $id = $atts['id'];
         }
-
         $user = UserHandler::getUser($id, true);
-
         if(!$user){
             $this->redirect('/');
         }
@@ -44,11 +41,32 @@ class ProfileController extends Controller
             $this->loggedUser->id
         );
 
+        $isFollowing = false;
+        if($user->id !== $this->loggedUser->id){
+            $isFollowing = UserHandler::isFollowing($this->loggedUser->id, $user->id);
+        }
+
         $this->render('profile', [
             'loggedUser' => $this->loggedUser,
             'user' => $user,
-            'feed' => $feed
+            'feed' => $feed,
+            'isFollowing' => $isFollowing
         ]);
+    }
+
+    public function follow($atts)
+    {
+        $to = intval($atts['id']);
+
+        if(UserHandler::idExists($to)){
+            if(UserHandler::isFollowing($this->loggedUser->id, $to)){
+                UserHandler::unfollow($this->loggedUser->id, $to);
+            }else{
+                UserHandler::follow($this->loggedUser->id, $to);
+            }
+        }
+
+        $this->redirect('/perfil/'.$to);
     }
 
 }
