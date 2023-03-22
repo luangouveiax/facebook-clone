@@ -26,6 +26,7 @@ class ProfileController extends Controller
         if(!empty($atts['id'])){
             $id = $atts['id'];
         }
+
         $user = UserHandler::getUser($id, true);
         if(!$user){
             $this->redirect('/');
@@ -67,6 +68,62 @@ class ProfileController extends Controller
         }
 
         $this->redirect('/perfil/'.$to);
+    }
+
+    public function friends($atts = [])
+    {
+        $id = $this->loggedUser->id;
+        if(!empty($atts['id'])){
+            $id = $atts['id'];
+        }
+        
+        $user = UserHandler::getUser($id, true);
+        if(!$user){
+            $this->redirect('/');
+        }
+
+        $dateFrom = new DateTime($user->birthdate);
+        $dateTo = new DateTime('today');
+        $user->ageYears = $dateFrom->diff($dateTo)->y;
+
+        $isFollowing = false;
+        if($user->id !== $this->loggedUser->id){
+            $isFollowing = UserHandler::isFollowing($this->loggedUser->id, $user->id);
+        }
+
+        $this->render('profile_friends', [
+            'loggedUser' => $this->loggedUser,
+            'user' => $user,
+            'isFollowing' => $isFollowing
+        ]);
+    }
+
+    public function photos($atts = [])
+    {
+        $id = $this->loggedUser->id;
+        if(!empty($atts['id'])){
+            $id = $atts['id'];
+        }
+        
+        $user = UserHandler::getUser($id, true);
+        if(!$user){
+            $this->redirect('/');
+        }
+
+        $dateFrom = new DateTime($user->birthdate);
+        $dateTo = new DateTime('today');
+        $user->ageYears = $dateFrom->diff($dateTo)->y;
+
+        $isFollowing = false;
+        if($user->id !== $this->loggedUser->id){
+            $isFollowing = UserHandler::isFollowing($this->loggedUser->id, $user->id);
+        }
+
+        $this->render('profile_photos', [
+            'loggedUser' => $this->loggedUser,
+            'user' => $user,
+            'isFollowing' => $isFollowing
+        ]);
     }
 
 }
